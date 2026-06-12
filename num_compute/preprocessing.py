@@ -36,7 +36,16 @@ class StandardScaler(StreamingStats):
         containing data to be scaled. 
         """
 
-        return (X - self.mean) / self.std
+        mask = (self.std != 0)
+        
+        if np.any(mask == 0):
+            print("Warning: Some columns have been removed since they have a standard deviation of 0.")
+            
+        X_filtered = X[:, mask]
+        mean_filtered = self.mean[mask]
+        std_filtered = self.std[mask]
+
+        return (X_filtered - mean_filtered) / std_filtered
 
     def fit_transform(self, X):
 
@@ -140,7 +149,7 @@ class OneHotEncoder():
         Encoders categorical variables to integer encoding.
 
         Args:
-            X (np.ndarray): A array containing data to be encoded.
+            X (np.ndarray): An array containing data to be encoded.
         """
 
         # Exception handling
@@ -150,7 +159,7 @@ class OneHotEncoder():
         # Need to add handle_unknown = "ignore" functionality
         # Need more robust nan functionality for arrays with strings
 
-        encoding_func = np.vectorize(self.encoding.get)
+        encoding_func = np.vectorize(lambda x: self.encoding.get(x, np.nan))
         nan_mask = np.isin(X, [np.nan, "nan"])
         encoded_arr = np.full(X.shape, np.nan)
         encoded_arr[~nan_mask] = encoding_func(X[~nan_mask]).astype(float)
@@ -161,7 +170,10 @@ class OneHotEncoder():
     def fit_transform(self, X):
 
         """
-        
+        Encodes categorical variables using one-hot-encoding and then transforms array using encoding.
+
+        Args:
+            X (np.ndarray): An array containing data to be encoded.
         """
 
         self.partial_fit(X)
