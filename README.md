@@ -37,3 +37,5 @@ A machine library for classification based on decision-trees that supports strea
     + Compare predictions vs ground truth
 
 ### Demo
+
+Refer to demo.ipynb for an example usage.
