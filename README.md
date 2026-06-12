@@ -35,3 +35,5 @@ A machine library for classification based on decision-trees that supports strea
     + Plot metric over time
     + Compare models
     + Compare predictions vs ground truth
+
+### Demo
